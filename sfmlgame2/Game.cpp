@@ -12,7 +12,7 @@ void Game::initializeVariables()
     this->health = 10;
     this->enemySpawnTimerMax = 10.f;
     this->enemySpawnTimes = this->enemySpawnTimerMax;
-    this->maxEnemies = 3;
+    this->maxEnemies = 96;//96 to max
     this->mouseHeld = false;
     this->startTime = clock();
     this->temp = 50;
@@ -23,13 +23,14 @@ void Game::initializeVariables()
     this->greenBox=0;
     this->redBox=0;
     this->greenBoxLeft = maxEnemies;
+   
 }
 
 void Game::initWindow()
 {
 
-    this->videoMode.height = 600;
-    this->videoMode.width = 800;
+    this->videoMode.height = 519.6;
+    this->videoMode.width = 850;
 
     this->window = new sf::RenderWindow(this->videoMode, "My first game", sf::Style::Titlebar | sf::Style::Close);
     this->window->setFramerateLimit(60);
@@ -55,7 +56,9 @@ void Game::initText()
 
 void Game::initEnemies()
 {
-    this->enemy.setPosition(10.f, 10.f);
+
+    ;
+    //this->enemy.setPosition(10.f, 10.f);
 }
 
 Game::Game()
@@ -85,36 +88,121 @@ const bool Game::getEndGame() const
 
 void Game::spawnEnemy()
 {
-    this->enemy.setPosition(
-        static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
-        (rand()% static_cast<int>(this->window->getSize().y-this->enemy.getSize().y))
-    );
+    
+    
 
 
-    //randomize enemy type
+        float lenght = 100;
 
-    int type = rand() % 2;
-    switch (type)
-    {
-    case 0:
-        this->enemy.setSize(sf::Vector2f(75.f, 75.f));
-        this->enemy.setFillColor(sf::Color::Green);
+        int type= rand() % 2;
+
+        switch (type)
+        {
+        case 0:
+            enemy.setPointCount(3); //ustawienie liczby wierzchołków na 3
+            enemy.setPoint(0, sf::Vector2f(0.f, 0.f)); //ustawienie pozycji pierwszego wierzchołka
+            enemy.setPoint(1, sf::Vector2f(lenght / 2.f, lenght * sqrt(3.f) / 2.f)); //ustawienie pozycji drugiego wierzchołka
+            enemy.setPoint(2, sf::Vector2f(lenght, 0.f)); //ustawienie pozycji trzeciego wierzchołka
+
+
+            break;
+        case 1:
+            enemy.setPointCount(3); //ustawienie liczby wierzchołków na 3
+            enemy.setPoint(0, sf::Vector2f(0.f, lenght * sqrt(3.f) / 2.f)); // ustawienie pozycji pierwszego wierzchołka
+            enemy.setPoint(1, sf::Vector2f(lenght / 2.f, 0.f)); // ustawienie pozycji drugiego wierzchołka
+            enemy.setPoint(2, sf::Vector2f(lenght, lenght * sqrt(3.f) / 2.f)); // ustawienie pozycji trzeciego wierzchołka
+
+            break;
+        }
+
+       
+
+        sf::Vector2u windowSize = this->window->getSize();
+        sf::FloatRect enemyBounds = this->enemy.getGlobalBounds();
+
+       
+     
+
+        if (type == 0)
+        {
+            int valuesX[] = { 0,100, 200, 300, 400, 500, 600,700 };
+            int valuesY[] = { 0,86.60, 173.2, 259.8, 346.4, 433, };
+
+            float posistionX = 0;
+            float posistionY = 0;
+
+            int randomIndexX = std::rand() % 8; // indeks od 0 do 5
+            float positionX = valuesX[randomIndexX];
+
+            int randomIndexY = std::rand() % 6; // indeks od 0 do 5
+            float positionY = valuesY[randomIndexY];
+
+            this->enemy.setPosition(positionX, positionY);
+        }
+        else if (type == 1)
+        {
+           
+            int valuesX[] = { 50,150, 250, 350, 450, 550, 650,750 };
+            int valuesY[] = { 0,86.60, 173.2, 259.8, 346.4, 433, };
+
+            float posistionX = 0;
+            float posistionY = 0;
+
+            int randomIndexX = std::rand() % 8; // indeks od 0 do 5
+            float positionX = valuesX[randomIndexX];
+
+            int randomIndexY = std::rand() % 6; // indeks od 0 do 5
+            float positionY = valuesY[randomIndexY];
+
+            this->enemy.setPosition(positionX, positionY);
+            
+        }
+
+       //OGOLNIE JEST LIPA ALE DO OGARNIECIA BEDZIE TRZEBA SRAWDZIC CZY W INNYCH MIEJSCACH KIEDY PRZECIWNIK SIE NIE TWORZY CZY ROSNIE CZY MALEJE MAXENEMIES ITP BO SIE BEDZIE PIERDOLILO 
+        for (int i = 0; i < this->enemies.size(); i++)
+        {
+            sf::Vector2f enemyPosition = this->enemies[i].getPosition();
+            sf::Vector2f currentEnemyPosition = this->enemy.getPosition();
+            if (enemyPosition.x == currentEnemyPosition.x && enemyPosition.y == currentEnemyPosition.y)
+            {
+                // Nowy wróg zajmuje już zajętą pozycję, wywołaj ponownie funkcję spawnEnemy()
+                this->spawnEnemy();
+                return;
+            }
+        }
+                //randomize enemy type
+
+        type=rand() % 2;
+        switch (type)
+        {
+        case 0:
+            //this->enemy.setSize(sf::Vector2f(75.f, 75.f));
+            this->enemy.setFillColor(sf::Color::Green);
         
         
-        break;
-    case 1:
-        this->enemy.setSize(sf::Vector2f(100.f, 100.f));
-        this->enemy.setFillColor(sf::Color::Red);
-        this->greenBoxLeft -=1;
+            break;
+        case 1:
+            //this->enemy.setSize(sf::Vector2f(100.f, 100.f));
+            this->enemy.setFillColor(sf::Color::Red);
+            this->greenBoxLeft -=1;
         
-        break;
-    }
+            break;
+        }
+
+
 
   
 
     //add object to container enemies
-
+    this->help++;
     this->enemies.push_back(this->enemy);
+     
+
+
+  
+
+
+    
 }
 
 void Game::poolEvents()
@@ -202,7 +290,7 @@ void Game::updateEnemies()
 
                 //spawn enemy and reset
                 this->spawnEnemy();
-                this->help++;
+               
                 this->enemySpawnTimes = 0.f;
             }
             else
@@ -267,7 +355,7 @@ void Game::updateEnemies()
             }
             if (!deleted)
             {
-                this->health--;
+                //this->health--;
             }
            
            

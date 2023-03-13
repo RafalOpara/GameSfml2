@@ -4,6 +4,7 @@
 #include <ctime>
 #include<sstream>
 #include <time.h>
+#include <math.h>
 
 
 #include <SFML/Graphics.hpp>
@@ -45,6 +46,7 @@ private:
     int gameTime;
     int temp;
   
+   
     int help;
     int greenBox;
     int redBox;
@@ -52,8 +54,8 @@ private:
 
     //game objects
 
-    std::vector<sf::RectangleShape> enemies;
-    sf::RectangleShape enemy;
+    std::vector<sf::ConvexShape> enemies;
+    sf::ConvexShape enemy;
 
     //private funckions
 
